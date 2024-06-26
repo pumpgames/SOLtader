@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Trader Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1, h2 {
+            color: #4a4a4a;
+            text-align: center;
+        }
+        .game-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .market-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .market-info div {
+            flex: 1;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #news, #tweets {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e8e8e8;
+            border-radius: 5px;
+        }
+        #timer, #highScore {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .icon-container {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #00FFA3, #4248B5);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            margin: 0 auto 20px;
+        }
+        .coin {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle at 30% 30%, #FFD700, #FFA500);
+            border-radius: 50%;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 36px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .chart {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 40px;
+            height: 30px;
+        }
+        .chart-bar {
+            position: absolute;
+            bottom: 0;
+            width: 8px;
+            background-color: #fff;
+            border-radius: 4px 4px 0 0;
+        }
+        .chart-bar:nth-child(1) { height: 15px; left: 0; }
+        .chart-bar:nth-child(2) { height: 22px; left: 11px; }
+        .chart-bar:nth-child(3) { height: 30px; left: 22px; }
+        .rocket {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 30px solid #fff;
+            transform: rotate(45deg);
+        }
+        .rocket::after {
+            content: '';
+            position: absolute;
+            bottom: -32px;
+            left: -5px;
+            width: 10px;
+            height: 10px;
+            background-color: #FF4500;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="icon-container">
+            <div class="coin">S</div>
+            <div class="chart">
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+                <div class="chart-bar"></div>
+            </div>
+            <div class="rocket"></div>
+        </div>
+        <h1>🌟 SOLANA TRADER PRO 🌟</h1>
+        <div id="tweets">
+            <h3>Latest Tweets:</h3>
+            <p id="tweetContent">Loading tweets...</p>
+        </div>
+        <div id="timer">Time left: 60s</div>
+        <div id="highScore">High Score: $10,000</div>
+        <div class="market-info">
+            <div>
+                <h3>Current SOL Price:</h3>
+                <p id="price">$22.15</p>
+            </div>
+            <div>
+                <h3>Your Balance:</h3>
+                <p id="balance">$10,000.00</p>
+            </div>
+            <div>
+                <h3>SOL Holdings:</h3>
+                <p id="holdings">0</p>
+            </div>
+        </div>
+        <canvas id="priceChart"></canvas>
+        <button onclick="buy()">Buy SOL</button>
+        <button onclick="sell()">Sell SOL</button>
+        <button onclick="updateMarket()">Refresh Market</button>
+        <div id="news">
+            <h3>Market News:</h3>
+            <p id="newsContent">Welcome to Solana Trader Pro! Stay tuned for market updates.</p>
+        </div>
+    </div>
+
+    <script>
+        let price = 22.15;
+        let balance = 10000;
+        let holdings = 0;
+        let timeLeft = 60;
+        let priceHistory = [price];
+        let chart;
+        let highScore = 10000;
+        const initialBalance = 10000;
+
+        const tweets = [
+            "Just sold all my SOL. This crypto is going nowhere! #SolanaFail",
+            "Heard rumors that Solana's network is unstable again. Sell while you can!",
+            "Why bother with SOL when there are so many better options out there? #CryptoAdvice",
+            "Insider info: Major SOL dump incoming. You've been warned!",
+            "Solana? More like So-long-a to your money! 😂 #CryptoJokes"
+        ];
+
+        function updateDisplay() {
+            document.getElementById('price').innerText = '$' + price.toFixed(2);
+            document.getElementById('balance').innerText = '$' + balance.toFixed(2);
+            document.getElementById('holdings').innerText = holdings;
+            document.getElementById('highScore').innerText = 'High Score: $' + highScore.toFixed(2);
+            updateChart();
+        }
+
+        function buy() {
+            if (balance >= price) {
+                holdings++;
+                balance -= price;
+                updateDisplay();
+            } else {
+                alert("Not enough funds to buy!");
+            }
+        }
+
+        function sell() {
+            if (holdings > 0) {
+                holdings--;
+                balance += price;
+                updateDisplay();
+            } else {
+                alert("No SOL to sell!");
+            }
+        }
+
+        function updateMarket() {
+            let change = (Math.random() - 0.5) * 2;
+            price += change;
+            if (price < 1) price = 1;
+            priceHistory.push(price);
+            updateDisplay();
+            document.getElementById('newsContent').innerText = change > 0 ? 
+                "Solana sees a surge in demand!" : "Solana faces selling pressure.";
+            updateTweet();
+        }
+
+        function updateTweet() {
+            let tweet = tweets[Math.floor(Math.random() * tweets.length)];
+            document.getElementById('tweetContent').innerText = tweet;
+        }
+
+        function endGame() {
+            balance += holdings * price;
+            holdings = 0;
+
+            let finalBalance = balance;
+            let message = "";
+
+            if (finalBalance > initialBalance) {
+                message = "You Won! ";
+            } else if (finalBalance < initialBalance) {
+                message = "You Lost! ";
+            } else {
+                message = "It's a tie! ";
+            }
+
+            message += `Your final balance is $${finalBalance.toFixed(2)}.`;
+
+            if (finalBalance > highScore) {
+                highScore = finalBalance;
+                message += " New High Score!";
+            }
+
+            alert(message);
+            resetGame();
+        }
+
+        function resetGame() {
+            price = 22.15;
+            balance = 10000;
+            holdings = 0;
+            timeLeft = 60;
+            priceHistory = [price];
+            updateDisplay();
+            startTimer();
+            updateTweet();
+        }
+
+        function startTimer() {
+            let timer = setInterval(function() {
+                timeLeft--;
+                document.getElementById('timer').innerText = `Time left: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function updateChart() {
+            if (chart) {
+                chart.data.labels = Array.from({length: priceHistory.length}, (_, i) => i + 1);
+                chart.data.datasets[0].data = priceHistory;
+                chart.update();
+            } else {
+                let ctx = document.getElementById('priceChart').getContext('2d');
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Array.from({length: priceHistory.length}, (_, i) => i + 1),
+                        datasets: [{
+                            label: 'SOL Price',
+                            data: priceHistory,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: false
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        updateDisplay();
+        startTimer();
+        updateTweet();
+        setInterval(updateMarket, 5000);  // Auto-update market every 5 seconds
+    </script>
+</body>
+</html>
