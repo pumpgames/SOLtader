@@ -16,6 +16,21 @@
         h1, h2 {
             color: #4a4a4a;
             text-align: center;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .social-links {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .social-links a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #1DA1F2;
         }
         .game-container {
             background-color: white;
@@ -141,6 +156,11 @@
             <div class="rocket"></div>
         </div>
         <h1>🌟 SOLANA TRADER PRO 🌟</h1>
+        <p class="subtitle">CA:</p>
+        <div class="social-links">
+            <a href="https://twitter.com/SolanaTraderPro" target="_blank">Twitter</a>
+            <a href="https://t.me/SolanaTraderPro" target="_blank">Telegram</a>
+        </div>
         <div id="tweets">
             <h3>Latest Tweets:</h3>
             <p id="tweetContent">Loading tweets...</p>
@@ -186,7 +206,52 @@
             "Heard rumors that Solana's network is unstable again. Sell while you can!",
             "Why bother with SOL when there are so many better options out there? #CryptoAdvice",
             "Insider info: Major SOL dump incoming. You've been warned!",
-            "Solana? More like So-long-a to your money! 😂 #CryptoJokes"
+            "Solana? More like So-long-a to your money! 😂 #CryptoJokes",
+            "Another day, another Solana network outage. When will they learn?",
+            "SOL is the new LUNA. Change my mind. #CryptoComparison",
+            "Just lost half my portfolio thanks to Solana. Never again!",
+            "Solana's TPS claims are as real as unicorns. Don't be fooled!",
+            "Who needs decentralization when you have Solana? Oh wait... #Sarcasm",
+            "Solana devs must be using Internet Explorer. So slow! #TechJokes",
+            "If Solana was a car, it would be a Yugo. #CryptoAnalogies",
+            "Breaking: Solana to rename to 'Sometimes-ana' due to frequent downtime",
+            "Solana's white paper should be used as toilet paper. At least it would be useful then.",
+            "I've seen snails move faster than Solana transactions. #SpeedTest",
+            "Solana: The only blockchain that goes offline more than it's online. #ReliabilityIssues",
+            "Just found out what SOL stands for: Seriously Overrated Liability. #Acronyms",
+            "Solana's price chart looks like my heart rate during a horror movie. Spoiler: It flatlines.",
+            "If disappointment was a cryptocurrency, it would be called Solana. #HarshTruths",
+            "Thinking of buying Solana? Here's a better idea: Set your money on fire. Same result, more fun!",
+            "Solana: Because who doesn't love a good gambling addiction? #CryptoRisks",
+            "I asked ChatGPT to name the worst crypto. It said 'Solana' without hesitation. Even AI knows!",
+            "Solana's network is so centralized, it might as well be a SQL database. #Decentralization",
+            "Breaking: Solana to partner with Internet Explorer for 'improved' performance. #FakeNews",
+            "I'd rather invest in Beanie Babies than Solana. At least I can cuddle with those when I lose money.",
+            "Solana's blockchain is like a house of cards in a hurricane. #Stability",
+            "Just heard Solana's new slogan: 'We put the DOWN in downtime!' #MarketingFail",
+            "Solana: The only crypto that makes Dogecoin look like a solid investment. #Perspective",
+            "I've seen more uptime on my grandma's dial-up internet than on Solana's network. #90sKidsRemember",
+            "Solana's white paper should come with a fiction disclaimer. #CreativeWriting",
+            "If Solana was a person, it would be that friend who always cancels plans last minute. #Unreliable",
+            "Solana: Turning millionaires into thousandaires since 2020. #CryptoMagic",
+            "I used to be an optimist. Then I invested in Solana. #CharacterDevelopment",
+            "Solana's network is so fragile, it goes down if someone sneezes near a validator. #Robustness",
+            "Just found out 'HODL' was invented by a Solana investor trying to type 'HELP'. #CryptoHistory",
+            "Solana: Because who needs consistent uptime when you have great marketing? #Priorities",
+            "I'd trust a chocolate teapot more than I'd trust Solana with my money. #BritishHumor",
+            "Solana's performance is like a surprise party - you never know when it's going to happen. #Unpredictable",
+            "I've seen more stability in a Jenga tower than in Solana's blockchain. #StructuralIntegrity",
+            "Solana: The only blockchain that uses 'blue screen of death' as a feature, not a bug. #TechHumor",
+            "I asked a fortune teller about Solana's future. She laughed and refunded my money. #Signs",
+            "Solana's uptime is shorter than my attention span, and that's saying something. #ADHD",
+            "If Solana was a restaurant, it would be closed for 'maintenance' every time you try to eat there. #ServiceIndustry",
+            "I've seen better networks in a kindergarten friendship circle than Solana's blockchain. #Connections",
+            "Solana: Making Ethereum gas fees look reasonable since 2020. #Perspective",
+            "I tried to explain Solana to my dog. He understood 'sit' and 'stay' better. #ComplexityCrisis",
+            "Solana's price stability is like trying to balance on a unicycle during an earthquake. #Impossible",
+            "I've had longer-lasting relationships than Solana's uptime streaks. And I'm terrible at dating! #SelfDeprecatingHumor",
+            "Solana: The only crypto that makes safemoon look like a safe moon. #InvestmentAdvice",
+            "I'd trust a politician more than I'd trust Solana's network stability. And that's saying something! #PoliticalHumor"
         ];
 
         function updateDisplay() {
@@ -288,7 +353,7 @@
                 chart.update();
             } else {
                 let ctx = document.getElementById('priceChart').getContext('2d');
-                chart = new Chart(ctx, {
+  chart = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: Array.from({length: priceHistory.length}, (_, i) => i + 1),
